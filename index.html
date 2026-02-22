@@ -4,58 +4,66 @@
     <meta charset="UTF-8">
     <title>🥔 동글랜드 요리 시세 분석기 🥕</title>
     <style>
-        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #2c2f33; color: #ffffff; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: #23272a; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 95%; max-width: 700px; }
-        h2 { text-align: center; color: #7289da; margin-bottom: 25px; font-size: 26px; }
+        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: #262626; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); width: 95%; max-width: 700px; position: relative; border: 1px solid #333; }
         
-        /* 입력창 및 버튼 영역 */
-        .input-area { position: relative; width: 100%; }
-        textarea { width: 100%; height: 120px; border: 2px solid #4f545c; border-radius: 10px; padding: 10px; background: #40444b; color: white; margin-bottom: 10px; resize: none; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .btn-analyze { flex: 3; padding: 15px; background: #7289da; color: white; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-clear { flex: 1; padding: 15px; background: #f04747; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-analyze:hover { background: #5b6eae; }
-        .btn-clear:hover { background: #d83c3e; }
-
-        /* 결과 섹션 */
-        .tier-section { margin-top: 20px; border-radius: 10px; background: #2f3136; padding: 15px; border-left: 5px solid #7289da; }
-        .tier-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #faa61a; border-bottom: 1px solid #4f545c; padding-bottom: 5px; }
-        .item-row { padding: 10px; border-bottom: 1px solid #40444b; font-size: 16px; line-height: 1.5; }
+        h2 { text-align: center; color: #ffffff; margin-bottom: 25px; font-size: 26px; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
-        /* 파스텔 네온 효과 (텍스트용) */
-        .star { color: #ffffff; margin-right: 5px; }
-        .max-neon { color: #ffb7ce; font-weight: bold; text-shadow: 0 0 10px rgba(255, 183, 206, 0.7); animation: pink-glow 1.5s infinite alternate; }
-        .minus1-neon { color: #fff4a3; font-weight: bold; text-shadow: 0 0 10px rgba(255, 244, 163, 0.7); animation: yellow-glow 1.5s infinite alternate; }
-        .minus2-neon { color: #a7ffeb; font-weight: bold; text-shadow: 0 0 10px rgba(167, 255, 235, 0.7); animation: cyan-glow 1.5s infinite alternate; }
+        .btn-clear { position: absolute; top: 25px; right: 25px; padding: 6px 12px; background: #3d3d3d; color: #bbb; border: 1px solid #555; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-clear:hover { background: #f04747; color: white; border-color: #f04747; }
 
-        @keyframes pink-glow { 0% { text-shadow: 0 0 5px rgba(255, 183, 206, 0.4); } 100% { text-shadow: 0 0 15px rgba(255, 183, 206, 0.9); } }
-        @keyframes yellow-glow { 0% { text-shadow: 0 0 5px rgba(255, 244, 163, 0.4); } 100% { text-shadow: 0 0 15px rgba(255, 244, 163, 0.9); } }
-        @keyframes cyan-glow { 0% { text-shadow: 0 0 5px rgba(167, 255, 235, 0.4); } 100% { text-shadow: 0 0 15px rgba(167, 255, 235, 0.9); } }
+        textarea { width: 100%; height: 120px; border: 1px solid #444; border-radius: 12px; padding: 15px; background: #1e1e1e; color: #eee; margin-bottom: 15px; resize: none; box-sizing: border-box; font-size: 15px; }
+        textarea:focus { border-color: #666; outline: none; }
+        
+        .btn-analyze { 
+            width: 100%; 
+            padding: 10px; 
+            background: #eeeeee; 
+            color: #1a1a1a; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.3s; 
+            margin-bottom: 10px; 
+            box-shadow: 0 3px 0 #bcbcbc; 
+        }
+        .btn-analyze:hover { background: #ffffff; transform: translateY(-1px); box-shadow: 0 4px 0 #bcbcbc; }
+        .btn-analyze:active { transform: translateY(2px); box-shadow: 0 1px 0 #bcbcbc; }
 
-        .symbol-info { color: #ffffff; font-weight: bold; }
-        .empty-msg { color: #99aab5; font-style: italic; font-size: 14px; text-align: center; }
+        #timestamp { text-align: center; color: #777; font-size: 13px; margin-bottom: 20px; font-weight: normal; letter-spacing: 0.5px; }
 
-        /* 표(Table) 스타일 */
-        .price-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; background: #23272a; border-radius: 8px; overflow: hidden; }
-        .price-table th { background: #40444b; padding: 8px; color: #7289da; text-align: center; }
-        .price-table td { padding: 10px; border-bottom: 1px solid #2f3136; text-align: center; }
-        .price-table tr:last-child td { border-bottom: none; }
-        .diff-plus { color: #f04747; font-weight: bold; }
-        .diff-minus { color: #00aff4; font-weight: bold; }
+        .tier-section { margin-top: 25px; border-radius: 15px; background: #2d2d2d; padding: 20px; border: 1px solid #3d3d3d; }
+        .tier-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #ffffff; border-bottom: 1px solid #444; padding-bottom: 8px; }
+        
+        .item-row { padding: 12px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; }
+        .item-row:last-child { border-bottom: none; }
+
+        .star { color: #ffffff; font-weight: normal; margin-right: 8px; text-shadow: none; }
+
+        .max-name { color: #ffb7ce; font-weight: bold; text-shadow: 0 0 12px rgba(255, 183, 206, 0.8); animation: pink-glow 1.5s infinite alternate; }
+        .minus1-name { color: #fff4a3; font-weight: bold; text-shadow: 0 0 10px rgba(255, 244, 163, 0.7); animation: yellow-glow 1.5s infinite alternate; }
+        .minus2-name { color: #a7ffeb; font-weight: bold; text-shadow: 0 0 12px rgba(167, 255, 235, 0.8); animation: cyan-glow 1.5s infinite alternate; }
+
+        @keyframes pink-glow { 0% { text-shadow: 0 0 5px rgba(255, 183, 206, 0.4); } 100% { text-shadow: 0 0 18px rgba(255, 183, 206, 1); } }
+        @keyframes yellow-glow { 0% { text-shadow: 0 0 5px rgba(255, 244, 163, 0.4); } 100% { text-shadow: 0 0 18px rgba(255, 244, 163, 1); } }
+        @keyframes cyan-glow { 0% { text-shadow: 0 0 5px rgba(167, 255, 235, 0.4); } 100% { text-shadow: 0 0 18px rgba(167, 255, 235, 1); } }
+
+        .symbol-info { color: #ffffff; font-weight: bold; } 
+
+        /* 요기! 텍스트 색상을 조금 더 밝게 조정했어요 */
+        .empty-msg { color: #aaa; font-style: italic; font-size: 14px; padding: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <button class="btn-clear" onclick="clearAll()">초기화 🧹</button>
     <h2>🥔 동글랜드 요리 시세 분석기 🥕</h2>
-    <div class="input-area">
-        <textarea id="inputText" placeholder="디스코드 시세를 복사해서 붙여넣으세요!"></textarea>
-    </div>
-    <div class="btn-group">
-        <button class="btn-analyze" onclick="analyzePrice()">시세 분석 시작 🚀</button>
-        <button class="btn-clear" onclick="clearText()">초기화 🧹</button>
-    </div>
-
+    <textarea id="inputText" placeholder="디스코드 시세를 복사해서 붙여넣으세요!"></textarea>
+    <button class="btn-analyze" onclick="analyzePrice()">가온아 고점 안뜨면 알지? 🚀</button>
+    <div id="timestamp"></div> 
     <div id="resultArea"></div>
 </div>
 
@@ -69,48 +77,51 @@ const cookData = {
     "마늘빵": { tier: 3, max: 85 }, "블루베리 치즈케이크": { tier: 3, max: 80 },
     "핫도그": { tier: 4, max: 142 }, "고구마 팬케이크": { tier: 4, max: 89 }, "퐁신 오믈렛": { tier: 4, max: 89 },
     "홍합파스타": { tier: 4, max: 149 }, "로스트 치킨": { tier: 4, max: 89 }, "과일 케이크": { tier: 4, max: 89 },
-    "샌드위치": { tier: 4, max: 142 }
+    "과일케이크": { tier: 4, max: 89 }, "샌드위치": { tier: 4, max: 142 }
 };
 
-function clearText() {
+function clearAll() {
     document.getElementById('inputText').value = "";
     document.getElementById('resultArea').innerHTML = "";
+    document.getElementById('timestamp').innerHTML = "";
 }
 
 function analyzePrice() {
     const text = document.getElementById('inputText').value;
-    const regex = /\[(.+?)\]\s*\|\s*(\d+)\s*→\s*(\d+)/g;
+    const regex = /\[(.+?)\]\s*\|\s*\d+\s*→\s*(\d+)/g;
     let results = { 1: [], 2: [], 3: [], 4: [] };
     let match;
 
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? '오후' : '오전';
+    hours = hours % 12 || 12; 
+    const timeString = `${year}년 ${month}월 ${day}일 ${ampm} ${hours}시 ${minutes}분 기준`;
+    
+    document.getElementById('timestamp').innerHTML = timeString + " <<";
+
     while ((match = regex.exec(text)) !== null) {
         let name = match[1].trim();
-        let oldPrice = parseInt(match[2]);
-        let currPrice = parseInt(match[3]);
+        let currPrice = parseInt(match[2]);
         
         if (cookData[name]) {
             let target = cookData[name];
-            let diff = currPrice - oldPrice;
-            let diffHtml = diff > 0 ? `<span class="diff-plus">▲${diff}</span>` : (diff < 0 ? `<span class="diff-minus">▼${Math.abs(diff)}</span>` : "-");
-
-            let statusClass = "";
-            let tagText = "";
+            let htmlContent = "";
 
             if (currPrice === target.max) {
-                statusClass = "max-neon";
-                tagText = "💕최고가💕";
+                htmlContent = `<span class="star">⭐</span><span class="max-name">${name}</span> <span class="symbol-info">「 💕최고가💕｜${currPrice} 」</span>`;
             } else if (currPrice === target.max - 1) {
-                statusClass = "minus1-neon";
-                tagText = "-1 원";
+                htmlContent = `<span class="star">⭐</span><span class="minus1-name">${name}</span> <span class="symbol-info">「 -1 원｜${currPrice} 」</span>`;
             } else if (currPrice === target.max - 2) {
-                statusClass = "minus2-neon";
-                tagText = "-2 원";
+                htmlContent = `<span class="star">⭐</span><span class="minus2-name">${name}</span> <span class="symbol-info">「 -2 원｜${currPrice} 」</span>`;
             }
 
-            if (statusClass !== "") {
-                results[target.tier].push({
-                    name, oldPrice, currPrice, diffHtml, statusClass, tagText
-                });
+            if (htmlContent !== "") {
+                results[target.tier].push(htmlContent);
             }
         }
     }
@@ -124,36 +135,11 @@ function renderResults(data) {
                     <div class="tier-title">${i}차 요리</div>`;
         
         if (data[i].length === 0) {
-            html += `<div class="empty-msg">다음에 고점 뜨려나부다 ( •̀ ω •́ )✧</div>`;
+            html += `<div class="empty-msg">기다림의 미학... 고점아 힘내자 ( •̀ ω •́ )</div>`;
         } else {
-            // 요약 텍스트 출력
-            data[i].forEach(item => {
-                html += `<div class="item-row">
-                            <span class="star">⭐</span><span class="${item.statusClass}">${item.name}</span>
-                            <span class="symbol-info"> 「 ${item.tagText} ｜ ${item.currPrice} 」</span>
-                         </div>`;
+            data[i].forEach(itemHtml => {
+                html += `<div class="item-row">${itemHtml}</div>`;
             });
-
-            // 표(Table) 출력
-            html += `<table class="price-table">
-                        <thead>
-                            <tr>
-                                <th>요리명</th>
-                                <th>이전</th>
-                                <th>현재</th>
-                                <th>변동</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-            data[i].forEach(item => {
-                html += `<tr>
-                            <td class="${item.statusClass}">${item.name}</td>
-                            <td>${item.oldPrice}</td>
-                            <td>${item.currPrice}</td>
-                            <td>${item.diffHtml}</td>
-                         </tr>`;
-            });
-            html += `</tbody></table>`;
         }
         html += `</div>`;
     }
