@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0045)https://matcheozikine.github.io/dongleeeland/ -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <title>🥔 동글랜드 요리 시세 분석기 🥕</title>
     <style>
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -69,15 +69,44 @@
 
 <script>
 const cookData = {
-    "타코": { tier: 1, max: 51 }, "해물카레": { tier: 1, max: 34 }, "고구마 맛탕": { tier: 1, max: 51 },
-    "베이글": { tier: 1, max: 51 }, "고로케": { tier: 1, max: 22 }, "미트볼": { tier: 1, max: 51 },
-    "감자튀김": { tier: 2, max: 80 }, "콘 마카로니": { tier: 2, max: 85 }, "소고기미역국": { tier: 2, max: 74 },
-    "라면": { tier: 2, max: 85 }, "브리또": { tier: 2, max: 80 },
-    "스테이크": { tier: 3, max: 80 }, "전복죽": { tier: 3, max: 97 }, "와플": { tier: 3, max: 85 },
-    "마늘빵": { tier: 3, max: 85 }, "블루베리 치즈케이크": { tier: 3, max: 80 },
-    "핫도그": { tier: 4, max: 142 }, "고구마 팬케이크": { tier: 4, max: 89 }, "퐁신 오믈렛": { tier: 4, max: 89 },
-    "홍합파스타": { tier: 4, max: 149 }, "로스트 치킨": { tier: 4, max: 89 }, "과일 케이크": { tier: 4, max: 89 },
-    "과일케이크": { tier: 4, max: 89 }, "샌드위치": { tier: 4, max: 142 }
+    // 1차 요리
+    "타코": { tier: 1, max: 51 },
+    "해물카레": { tier: 1, max: 34 },
+    "고구마 맛탕": { tier: 1, max: 51 },
+    "고구마맛탕": { tier: 1, max: 51 }, // 공백 없는 버전 추가
+    "베이글": { tier: 1, max: 51 },
+    "고로케": { tier: 1, max: 22 },
+    "미트볼": { tier: 1, max: 51 },
+    "무트볼": { tier: 1, max: 51 }, // 무트볼 추가
+
+    // 2차 요리
+    "감자튀김": { tier: 2, max: 80 },
+    "콘 마카로니": { tier: 2, max: 85 },
+    "콘마카로니": { tier: 2, max: 85 }, // 공백 없는 버전 추가
+    "소고기미역국": { tier: 2, max: 74 },
+    "라면": { tier: 2, max: 85 },
+    "브리또": { tier: 2, max: 80 },
+
+    // 3차 요리
+    "스테이크": { tier: 3, max: 80 },
+    "전복죽": { tier: 3, max: 97 },
+    "와플": { tier: 3, max: 85 },
+    "마늘빵": { tier: 3, max: 85 },
+    "블루베리 치즈케이크": { tier: 3, max: 80 },
+    "블루베리치즈케이크": { tier: 3, max: 80 }, // 공백 없는 버전 추가
+
+    // 4차 요리
+    "핫도그": { tier: 4, max: 142 },
+    "고구마 팬케이크": { tier: 4, max: 89 },
+    "고구마팬케이크": { tier: 4, max: 89 }, // 공백 없는 버전 추가
+    "퐁신 오믈렛": { tier: 4, max: 89 },
+    "퐁신오믈렛": { tier: 4, max: 89 }, // 공백 없는 버전 추가
+    "홍합파스타": { tier: 4, max: 149 },
+    "로스트 치킨": { tier: 4, max: 89 },
+    "로스트치킨": { tier: 4, max: 89 }, // 공백 없는 버전 추가
+    "과일 케이크": { tier: 4, max: 89 },
+    "과일케이크": { tier: 4, max: 89 },
+    "샌드위치": { tier: 4, max: 142 }
 };
 
 function clearAll() {
@@ -147,5 +176,6 @@ function renderResults(data) {
 }
 </script>
 
-</body>
-</html>
+
+
+</body></html>
