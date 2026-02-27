@@ -6,7 +6,6 @@
     <style>
         /* 기본 레이아웃 스타일 */
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; font-size: 16px; }
-        /* 컨테이너 너비를 줄여서 한눈에 들어오게 조정 */
         .container { background: #262626; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); width: 95%; max-width: 900px; border: 1px solid #333; position: relative; }
         
         /* 탭 스타일 */
@@ -26,8 +25,10 @@
         .btn-analyze { width: 100%; padding: 12px; background: #eeeeee; color: #1a1a1a; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-bottom: 10px; box-shadow: 0 3px 0 #bcbcbc; }
         .btn-analyze:hover { background: #ffffff; transform: translateY(-1px); box-shadow: 0 4px 0 #bcbcbc; }
         #timestamp { text-align: center; color: #777; font-size: 13px; margin-bottom: 15px; }
-        .tier-section { margin-top: 20px; border-radius: 15px; background: #2d2d2d; padding: 15px; border: 1px solid #3d3d3d; }
-        .item-row { padding: 10px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; text-align: center; }
+        
+        .tier-section { margin-top: 20px; border-radius: 15px; background: #2d2d2d; padding: 15px; border: 1px solid #3d3d3d; text-align: left; }
+        .item-row { padding: 10px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; text-align: left; padding-left: 15px; }
+        
         .max-name { color: #ffb7ce; font-weight: bold; text-shadow: 0 0 12px rgba(255, 183, 206, 0.8); animation: pink-glow 1.5s infinite alternate; }
         .minus1-name { color: #fff4a3; font-weight: bold; text-shadow: 0 0 10px rgba(255, 244, 163, 0.7); animation: yellow-glow 1.5s infinite alternate; }
         .minus2-name { color: #a7ffeb; font-weight: bold; text-shadow: 0 0 12px rgba(167, 255, 235, 0.8); animation: cyan-glow 1.5s infinite alternate; }
@@ -133,7 +134,6 @@ const groupB_Config = [
     { name: "굴", initial: 12600 }, { name: "미역", initial: 13000 }, { name: "전복", initial: 18000 }, { name: "홍합", initial: 30000 }
 ];
 
-// 베이글/타코 원가 수식 보존 (건초 데이터를 반죽으로 계산)
 const recipes = [
     { tier: 1, name: "무트볼", sell: 51, ing: {"고구마/무/콩/블루베리":2, "당근 상자":2}, txt: "무2 당근2" },
     { tier: 1, name: "고구마 맛탕", sell: 51, ing: {"고구마/무/콩/블루베리":2, "감자 상자":2}, txt: "고구마2 감자2" },
@@ -162,7 +162,6 @@ const recipes = [
 
 let unitPrices = {};
 
-/* [탭 전환 로직] */
 function openTab(evt, tabName) {
     const contents = document.getElementsByClassName("tab-content");
     for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
@@ -172,7 +171,6 @@ function openTab(evt, tabName) {
     evt.currentTarget.classList.add("active");
 }
 
-/* [기능 1: 요리 시세 분석기] */
 function clearAllAnalysis() {
     document.getElementById('inputText').value = "";
     document.getElementById('resultArea').innerHTML = "";
@@ -205,7 +203,7 @@ function analyzePrice() {
 function renderMarketResults(data) {
     let html = "";
     for (let i = 1; i <= 4; i++) {
-        html += `<div class="tier-section"><div class="tier-title" style="border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px; border-left:none; margin:0; padding-left:0; font-size:20px;">${i}차 요리</div>`;
+        html += `<div class="tier-section"><div class="tier-title" style="border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px; border-left:none; margin:0; padding-left:0; font-size:18px; text-align:left;">${i}차 요리</div>`;
         if (data[i].length === 0) html += `<div class="empty-msg">기다림의 미학... 고점아 힘내자 ( •̀ ω •́ )</div>`;
         else data[i].forEach(itemHtml => { html += `<div class="item-row">${itemHtml}</div>`; });
         html += `</div>`;
@@ -213,7 +211,6 @@ function renderMarketResults(data) {
     document.getElementById('resultArea').innerHTML = html;
 }
 
-/* [기능 2: 단가 분석기 및 계산 로직] */
 function formatVal(num) { return num === 0 ? "0" : Number(num.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
 function formatRound(num) { return Math.round(num).toLocaleString(); }
 
@@ -273,7 +270,7 @@ function updateProfits() {
 
         const section = document.createElement('div');
         section.innerHTML = `<div class="tier-title">${t}차 요리 순위</div>
-            <table><thead><tr><th class="rank-col">순위</th><th style="width:23%">요리명</th><th style="width:28%">판매가/1회원가</th><th>1회수익</th><th style="color:#ffca28">1시간수익</th></tr></thead>
+            <table><thead><tr><th class="rank-col">순위</th><th style="width:23%">요리명</th><th style="width:28%">최고 판매가/요리 1회 재료원가</th><th>1회 순수익</th><th style="color:#ffca28">1시간 순수익</th></tr></thead>
             <tbody>${tierRecipes.map((r, idx) => {
                 const rank = idx + 1;
                 const rowClass = rank <= 3 ? `rank-${rank}-row` : '';
