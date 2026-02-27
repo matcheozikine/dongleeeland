@@ -6,27 +6,28 @@
     <style>
         /* 기본 레이아웃 스타일 */
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; font-size: 16px; }
-        .container { background: #262626; padding: 35px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); width: 95%; max-width: 1150px; border: 1px solid #333; position: relative; }
+        /* 컨테이너 너비를 줄여서 한눈에 들어오게 조정 */
+        .container { background: #262626; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); width: 95%; max-width: 900px; border: 1px solid #333; position: relative; }
         
         /* 탭 스타일 */
         .tab-wrapper { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #444; padding-bottom: 15px; width: 100%; justify-content: center; }
-        .tab-btn { background: #333; border: none; color: #888; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        .tab-btn { background: #333; border: none; color: #888; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 17px; font-weight: bold; transition: 0.3s; }
         .tab-btn.active { background: #ffca28; color: #000; box-shadow: 0 0 15px rgba(255, 202, 40, 0.4); }
         .tab-content { display: none; width: 100%; }
         .tab-content.active { display: block; }
 
-        h2 { text-align: center; color: #ffffff; margin-bottom: 40px; font-size: 32px; letter-spacing: -1px; }
-        h3 { font-size: 20px; color: #fff; margin: 40px 0 20px 5px; display: flex; align-items: center; }
+        h2 { text-align: center; color: #ffffff; margin-bottom: 30px; font-size: 28px; letter-spacing: -1px; }
+        h3 { font-size: 19px; color: #fff; margin: 30px 0 15px 5px; display: flex; align-items: center; }
 
-        /* [탭 1: 요리 시세 분석기 전용 스타일] */
-        .btn-clear { position: absolute; top: 25px; right: 25px; padding: 6px 12px; background: #3d3d3d; color: #bbb; border: 1px solid #555; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        /* [탭 1: 요리 시세 분석기] */
+        .btn-clear { position: absolute; top: 20px; right: 20px; padding: 6px 12px; background: #3d3d3d; color: #bbb; border: 1px solid #555; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-clear:hover { background: #f04747; color: white; border-color: #f04747; }
-        textarea { width: 100%; height: 120px; border: 1px solid #444; border-radius: 12px; padding: 15px; background: #1e1e1e; color: #eee; margin-bottom: 15px; resize: none; box-sizing: border-box; font-size: 15px; }
-        .btn-analyze { width: 100%; padding: 10px; background: #eeeeee; color: #1a1a1a; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-bottom: 10px; box-shadow: 0 3px 0 #bcbcbc; }
+        textarea { width: 100%; height: 110px; border: 1px solid #444; border-radius: 12px; padding: 15px; background: #1e1e1e; color: #eee; margin-bottom: 15px; resize: none; box-sizing: border-box; font-size: 15px; }
+        .btn-analyze { width: 100%; padding: 12px; background: #eeeeee; color: #1a1a1a; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-bottom: 10px; box-shadow: 0 3px 0 #bcbcbc; }
         .btn-analyze:hover { background: #ffffff; transform: translateY(-1px); box-shadow: 0 4px 0 #bcbcbc; }
-        #timestamp { text-align: center; color: #777; font-size: 13px; margin-bottom: 20px; }
-        .tier-section { margin-top: 25px; border-radius: 15px; background: #2d2d2d; padding: 20px; border: 1px solid #3d3d3d; }
-        .item-row { padding: 12px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; text-align: center; }
+        #timestamp { text-align: center; color: #777; font-size: 13px; margin-bottom: 15px; }
+        .tier-section { margin-top: 20px; border-radius: 15px; background: #2d2d2d; padding: 15px; border: 1px solid #3d3d3d; }
+        .item-row { padding: 10px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; text-align: center; }
         .max-name { color: #ffb7ce; font-weight: bold; text-shadow: 0 0 12px rgba(255, 183, 206, 0.8); animation: pink-glow 1.5s infinite alternate; }
         .minus1-name { color: #fff4a3; font-weight: bold; text-shadow: 0 0 10px rgba(255, 244, 163, 0.7); animation: yellow-glow 1.5s infinite alternate; }
         .minus2-name { color: #a7ffeb; font-weight: bold; text-shadow: 0 0 12px rgba(167, 255, 235, 0.8); animation: cyan-glow 1.5s infinite alternate; }
@@ -36,25 +37,25 @@
         .symbol-info { color: #ffffff; font-weight: bold; }
         .empty-msg { color: #aaa; font-style: italic; font-size: 14px; text-align: center; padding: 10px; }
 
-        /* [탭 2, 3: 기존 디자인 유지] */
+        /* [탭 2, 3: 디자인] */
         .neon-pink { color: #ff007f; text-shadow: 0 0 8px #ff007f, 0 0 20px #ff007f; font-weight: bold; }
         .neon-cyan { color: #00e5ff; text-shadow: 0 0 8px #00e5ff, 0 0 20px #00e5ff; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; background: #1e1e1e; border-radius: 15px; overflow: hidden; font-size: 15px; table-layout: fixed; margin-bottom: 20px; }
-        th { background: #333; color: #ccc; padding: 15px 5px; font-weight: 600; border-bottom: 3px solid #444; }
-        td { padding: 15px 5px; border-bottom: 1px solid #333; text-align: center; color: #eee; }
-        input { width: 90%; background: #2d2d2d; border: 1px solid #444; color: #fff; text-align: right; padding: 10px 12px; border-radius: 8px; font-size: 17px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; background: #1e1e1e; border-radius: 12px; overflow: hidden; font-size: 15px; table-layout: fixed; margin-bottom: 20px; }
+        th { background: #333; color: #ccc; padding: 12px 5px; font-weight: 600; border-bottom: 2px solid #444; }
+        td { padding: 12px 5px; border-bottom: 1px solid #333; text-align: center; color: #eee; }
+        input { width: 85%; background: #2d2d2d; border: 1px solid #444; color: #fff; text-align: right; padding: 8px 10px; border-radius: 8px; font-size: 16px; font-weight: bold; }
         .highlight { color: #ffffff; font-weight: bold; }
-        .unit-text { font-size: 13px; color: #888; margin-left: 3px; }
-        .special-label { font-size: 12px; color: #ff9e9e; display: block; margin-top: 4px; }
+        .unit-text { font-size: 13px; color: #888; margin-left: 2px; }
+        .special-label { font-size: 11px; color: #ff9e9e; display: block; margin-top: 4px; }
         .sub-row td { background: #222; font-size: 12px; color: #aaa; padding: 8px 5px; }
         .sub-label { color: #888; margin-right: 4px; }
         .sub-val { color: #bbb; font-weight: bold; }
-        .gap { margin-right: 25px; }
+        .gap { margin-right: 15px; }
         .price-main { color: #fff4a3 !important; }
-        .tier-title { font-size: 24px; font-weight: bold; margin: 30px 0 10px 10px; color: #ffca28; border-left: 5px solid #ffca28; padding-left: 10px; }
-        .recipe-name-td { text-align: left !important; padding-left: 20px !important; font-weight: bold; font-size: 16px; } 
-        .minor-col { color: #777 !important; font-size: 13px !important; text-align: left !important; padding-left: 45px !important; }
-        .rank-col { width: 70px; font-weight: bold; }
+        .tier-title { font-size: 22px; font-weight: bold; margin: 25px 0 10px 5px; color: #ffca28; border-left: 5px solid #ffca28; padding-left: 10px; }
+        .recipe-name-td { text-align: left !important; padding-left: 15px !important; font-weight: bold; font-size: 16px; } 
+        .minor-col { color: #777 !important; font-size: 13px !important; text-align: left !important; padding-left: 20px !important; }
+        .rank-col { width: 60px; font-weight: bold; }
         .rank-1-row { background: rgba(255, 215, 0, 0.12) !important; }
         .rank-1-row .rank-text { color: #ffd700; text-shadow: 0 0 10px #ffd700; font-size: 16px; font-weight: 900; }
         .rank-2-row { background: rgba(192, 192, 192, 0.08) !important; }
@@ -88,12 +89,12 @@
     <div id="priceTab" class="tab-content">
         <h3>농작물 &amp; 부재료 [상자 <span class="neon-pink">1셜커</span> 기준]</h3>
         <table>
-            <thead><tr><th style="width: 25%;">재료명</th><th style="width: 20%;">매입가</th><th>1개</th><th>32개</th><th class="price-main">64개</th></tr></thead>
+            <thead><tr><th style="width: 25%;">재료명</th><th style="width: 20%;">매입가</th><th style="width: 15%;">1개</th><th style="width: 20%;">32개</th><th class="price-main">64개</th></tr></thead>
             <tbody id="groupABody"></tbody>
         </table>
         <h3>해산물 [상자 <span class="neon-cyan">1세트</span> 기준]</h3>
         <table>
-            <thead><tr><th style="width: 25%;">재료명</th><th style="width: 20%;">매입가</th><th>상자 1개</th><th>32개</th><th class="price-main">64개</th></tr></thead>
+            <thead><tr><th style="width: 25%;">재료명</th><th style="width: 20%;">매입가</th><th style="width: 15%;">상자 1개</th><th style="width: 20%;">32개</th><th class="price-main">64개</th></tr></thead>
             <tbody id="groupBBody"></tbody>
         </table>
     </div>
@@ -124,7 +125,7 @@ const groupA_Config = [
     { name: "토마토/양상추", conv: 15552, initial: 756000, hasSub: true },
     { name: "감자 상자", conv: 1728, initial: 0 }, { name: "당근 상자", conv: 1728, initial: 0 },
     { name: "비트 상자", conv: 1728, initial: 14000 }, { name: "열매 상자", conv: 1728, initial: 17000 },
-    { name: "반죽", conv: 5184, initial: 34000, label: "건초 가공 기준" }, { name: "생고기", conv: 8640, initial: 55000, label: "가공 고기 기준" },
+    { name: "건초", conv: 5184, initial: 34000, label: "반죽 5184개 기준" }, { name: "생고기", conv: 8640, initial: 55000, label: "가공고기 8640개 기준" },
     { name: "가공 우유", conv: 1728, initial: 0 }, { name: "가공 치즈", conv: 1728, initial: 0 }, { name: "호박", conv: 1728, initial: 3000 }
 ];
 
@@ -132,28 +133,28 @@ const groupB_Config = [
     { name: "굴", initial: 12600 }, { name: "미역", initial: 13000 }, { name: "전복", initial: 18000 }, { name: "홍합", initial: 30000 }
 ];
 
-// 베이글/타코 원가 수식 보존 (무2 반죽2 / 콩2 반죽2)
+// 베이글/타코 원가 수식 보존 (건초 데이터를 반죽으로 계산)
 const recipes = [
     { tier: 1, name: "무트볼", sell: 51, ing: {"고구마/무/콩/블루베리":2, "당근 상자":2}, txt: "무2 당근2" },
     { tier: 1, name: "고구마 맛탕", sell: 51, ing: {"고구마/무/콩/블루베리":2, "감자 상자":2}, txt: "고구마2 감자2" },
-    { tier: 1, name: "베이글", sell: 51, ing: {"고구마/무/콩/블루베리":2, "반죽":2}, txt: "무2 반죽2" },
-    { tier: 1, name: "타코", sell: 51, ing: {"고구마/무/콩/블루베리":2, "반죽":2}, txt: "콩2 반죽2" },
+    { tier: 1, name: "베이글", sell: 51, ing: {"고구마/무/콩/블루베리":2, "건초":2}, txt: "무2 반죽2" },
+    { tier: 1, name: "타코", sell: 51, ing: {"고구마/무/콩/블루베리":2, "건초":2}, txt: "콩2 반죽2" },
     { tier: 1, name: "해물카레", sell: 34, ing: {"굴":2, "당근 상자":1}, txt: "굴2 당근1" },
     { tier: 1, name: "고로케", sell: 22, ing: {"감자 상자":2, "당근 상자":2}, txt: "감자2 당근2" },
     { tier: 2, name: "라면", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "비트 상자":1, "생고기":1}, txt: "파2 비트1 고기1" },
     { tier: 2, name: "콘 마카로니", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "비트 상자":1, "가공 우유":1}, txt: "옥수수2 비트1 우유1" },
     { tier: 2, name: "감자튀김", sell: 80, ing: {"고구마/무/콩/블루베리":3, "감자 상자":1, "생고기":1}, txt: "고구마3 감자1 고기1" },
-    { tier: 2, name: "브리또", sell: 80, ing: {"고구마/무/콩/블루베리":3, "반죽":1, "가공 치즈":1}, txt: "무3 반죽1 치즈1" },
+    { tier: 2, name: "브리또", sell: 80, ing: {"고구마/무/콩/블루베리":3, "건초":1, "가공 치즈":1}, txt: "무3 반죽1 치즈1" },
     { tier: 2, name: "소고기미역국", sell: 74, ing: {"미역":2, "감자 상자":1, "생고기":1}, txt: "미역2 감자1 고기1" },
     { tier: 3, name: "전복죽", sell: 97, ing: {"전복":2, "당근 상자":1, "생고기":1}, txt: "전복2 당근1 고기1" },
     { tier: 3, name: "와플", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "호박":1, "가공 우유":1}, txt: "딸기2 호박1 우유1" },
     { tier: 3, name: "마늘빵", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "호박":1, "생고기":1}, txt: "마늘2 호박1 고기1" },
     { tier: 3, name: "스테이크", sell: 80, ing: {"고구마/무/콩/블루베리":3, "감자 상자":1, "생고기":1}, txt: "무3 감자1 고기1" },
-    { tier: 3, name: "블루베리 치즈케이크", sell: 80, ing: {"고구마/무/콩/블루베리":3, "반죽":1, "가공 치즈":1}, txt: "블루베리3 반죽1 치즈1" },
+    { tier: 3, name: "블루베리 치즈케이크", sell: 80, ing: {"고구마/무/콩/블루베리":3, "건초":1, "가공 치즈":1}, txt: "블루베리3 반죽1 치즈1" },
     { tier: 4, name: "홍합 파스타", sell: 149, ing: {"홍합":2, "감자 상자":1, "가공 치즈":1}, txt: "홍합2 감자1 치즈1" },
     { tier: 4, name: "핫도그", sell: 142, ing: {"토마토/양상추":2, "열매 상자":1, "생고기":1}, txt: "양상추2 열매1 고기1" },
     { tier: 4, name: "샌드위치", sell: 142, ing: {"토마토/양상추":2, "열매 상자":1, "가공 치즈":1}, txt: "토마토2 열매1 치즈1" },
-    { tier: 4, name: "고구마 팬케이크", sell: 89, ing: {"고구마/무/콩/블루베리":3, "반죽":1, "생고기":1}, txt: "고구마3 반죽1 고기1" },
+    { tier: 4, name: "고구마 팬케이크", sell: 89, ing: {"고구마/무/콩/블루베리":3, "건초":1, "생고기":1}, txt: "고구마3 반죽1 고기1" },
     { tier: 4, name: "퐁신 오믈렛", sell: 89, ing: {"고구마/무/콩/블루베리":3, "비트 상자":1, "가공 치즈":1}, txt: "무3 비트1 치즈1" },
     { tier: 4, name: "로스트 치킨", sell: 89, ing: {"고구마/무/콩/블루베리":3, "감자 상자":1, "생고기":1}, txt: "콩3 감자1 고기1" },
     { tier: 4, name: "과일 케이크", sell: 89, ing: {"고구마/무/콩/블루베리":3, "당근 상자":1, "가공 우유":1}, txt: "블루베리3 당근1 우유1" }
@@ -204,7 +205,7 @@ function analyzePrice() {
 function renderMarketResults(data) {
     let html = "";
     for (let i = 1; i <= 4; i++) {
-        html += `<div class="tier-section"><div class="tier-title" style="border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px;">${i}차 요리</div>`;
+        html += `<div class="tier-section"><div class="tier-title" style="border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px; border-left:none; margin:0; padding-left:0; font-size:20px;">${i}차 요리</div>`;
         if (data[i].length === 0) html += `<div class="empty-msg">기다림의 미학... 고점아 힘내자 ( •̀ ω •́ )</div>`;
         else data[i].forEach(itemHtml => { html += `<div class="item-row">${itemHtml}</div>`; });
         html += `</div>`;
@@ -272,7 +273,7 @@ function updateProfits() {
 
         const section = document.createElement('div');
         section.innerHTML = `<div class="tier-title">${t}차 요리 순위</div>
-            <table><thead><tr><th class="rank-col">순위</th><th style="width:23%">요리명</th><th style="width:28%">최고 판매가/요리 1회 재료원가</th><th>1회 순수익</th><th style="color:#ffca28">1시간 순수익</th></tr></thead>
+            <table><thead><tr><th class="rank-col">순위</th><th style="width:23%">요리명</th><th style="width:28%">판매가/1회원가</th><th>1회수익</th><th style="color:#ffca28">1시간수익</th></tr></thead>
             <tbody>${tierRecipes.map((r, idx) => {
                 const rank = idx + 1;
                 const rowClass = rank <= 3 ? `rank-${rank}-row` : '';
@@ -292,7 +293,7 @@ function init() {
         const safeId = m.name.replace(/\//g, '').replace(/ /g, '');
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
-        tr.innerHTML = `<td style="text-align:left; padding-left:25px;"><b>${m.name}</b>${m.label ? `<span class="special-label">${m.label}</span>` : ''}</td>
+        tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${m.name}</b>${m.label ? `<span class="special-label">${m.label}</span>` : ''}</td>
             <td><input type="text" value="${m.initial.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
             <td><span class="val-1 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
@@ -301,7 +302,7 @@ function init() {
         if (m.hasSub) {
             const subTr = document.createElement('tr');
             subTr.id = `sub-${safeId}`; subTr.className = 'sub-row';
-            subTr.innerHTML = `<td colspan="2"></td><td colspan="3" style="text-align:left; padding-left:15px;"><span class="gap"><span class="sub-label">상자 1세트:</span><span class="val-set1 sub-val">0</span>원</span><span class="gap"><span class="sub-label">상자 3세트(1셜커):</span><span class="val-set3 sub-val">0</span>원</span></td>`;
+            subTr.innerHTML = `<td colspan="2"></td><td colspan="3" style="text-align:left; padding-left:15px;"><span class="gap"><span class="sub-label">상자 1세트:</span><span class="val-set1 sub-val">0</span>원</span><span class="gap"><span class="sub-label">상자 3세트:</span><span class="val-set3 sub-val">0</span>원</span></td>`;
             aBody.appendChild(subTr);
         }
         calculateA(m.name, m.initial);
@@ -311,7 +312,7 @@ function init() {
         const safeId = item.name.replace(/ /g, '');
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
-        tr.innerHTML = `<td style="text-align:left; padding-left:25px;"><b>${item.name}</b></td>
+        tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${item.name}</b></td>
             <td><input type="text" value="${item.initial.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
             <td><span class="val-box1 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
