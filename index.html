@@ -1,115 +1,178 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)https://matcheozikine.github.io/dongleeeland/ -->
-<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <title>🥔 동글랜드 요리 시세 분석기 🥕</title>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🥔 동글랜드 요리사 분석기 🥕</title>
     <style>
-        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: #262626; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); width: 95%; max-width: 700px; position: relative; border: 1px solid #333; }
+        /* 기본 레이아웃 스타일 */
+        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; font-size: 16px; }
+        .container { background: #262626; padding: 35px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); width: 95%; max-width: 1150px; border: 1px solid #333; position: relative; }
         
-        h2 { text-align: center; color: #ffffff; margin-bottom: 25px; font-size: 26px; letter-spacing: -1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        
+        /* 탭 스타일 */
+        .tab-wrapper { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #444; padding-bottom: 15px; width: 100%; justify-content: center; }
+        .tab-btn { background: #333; border: none; color: #888; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        .tab-btn.active { background: #ffca28; color: #000; box-shadow: 0 0 15px rgba(255, 202, 40, 0.4); }
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: block; }
+
+        h2 { text-align: center; color: #ffffff; margin-bottom: 40px; font-size: 32px; letter-spacing: -1px; }
+        h3 { font-size: 20px; color: #fff; margin: 40px 0 20px 5px; display: flex; align-items: center; }
+
+        /* [탭 1: 요리 시세 분석기 전용 스타일] */
         .btn-clear { position: absolute; top: 25px; right: 25px; padding: 6px 12px; background: #3d3d3d; color: #bbb; border: 1px solid #555; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-clear:hover { background: #f04747; color: white; border-color: #f04747; }
-
         textarea { width: 100%; height: 120px; border: 1px solid #444; border-radius: 12px; padding: 15px; background: #1e1e1e; color: #eee; margin-bottom: 15px; resize: none; box-sizing: border-box; font-size: 15px; }
-        textarea:focus { border-color: #666; outline: none; }
-        
-        .btn-analyze { 
-            width: 100%; 
-            padding: 10px; 
-            background: #eeeeee; 
-            color: #1a1a1a; 
-            border: none; 
-            border-radius: 10px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            transition: 0.3s; 
-            margin-bottom: 10px; 
-            box-shadow: 0 3px 0 #bcbcbc; 
-        }
+        .btn-analyze { width: 100%; padding: 10px; background: #eeeeee; color: #1a1a1a; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-bottom: 10px; box-shadow: 0 3px 0 #bcbcbc; }
         .btn-analyze:hover { background: #ffffff; transform: translateY(-1px); box-shadow: 0 4px 0 #bcbcbc; }
-        .btn-analyze:active { transform: translateY(2px); box-shadow: 0 1px 0 #bcbcbc; }
-
-        #timestamp { text-align: center; color: #777; font-size: 13px; margin-bottom: 20px; font-weight: normal; letter-spacing: 0.5px; }
-
+        #timestamp { text-align: center; color: #777; font-size: 13px; margin-bottom: 20px; }
         .tier-section { margin-top: 25px; border-radius: 15px; background: #2d2d2d; padding: 20px; border: 1px solid #3d3d3d; }
-        .tier-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #ffffff; border-bottom: 1px solid #444; padding-bottom: 8px; }
-        
-        .item-row { padding: 12px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; }
-        .item-row:last-child { border-bottom: none; }
-
-        .star { color: #ffffff; font-weight: normal; margin-right: 8px; text-shadow: none; }
-
+        .item-row { padding: 12px; border-bottom: 1px solid #383838; font-size: 16px; line-height: 1.5; text-align: center; }
         .max-name { color: #ffb7ce; font-weight: bold; text-shadow: 0 0 12px rgba(255, 183, 206, 0.8); animation: pink-glow 1.5s infinite alternate; }
         .minus1-name { color: #fff4a3; font-weight: bold; text-shadow: 0 0 10px rgba(255, 244, 163, 0.7); animation: yellow-glow 1.5s infinite alternate; }
         .minus2-name { color: #a7ffeb; font-weight: bold; text-shadow: 0 0 12px rgba(167, 255, 235, 0.8); animation: cyan-glow 1.5s infinite alternate; }
-
         @keyframes pink-glow { 0% { text-shadow: 0 0 5px rgba(255, 183, 206, 0.4); } 100% { text-shadow: 0 0 18px rgba(255, 183, 206, 1); } }
         @keyframes yellow-glow { 0% { text-shadow: 0 0 5px rgba(255, 244, 163, 0.4); } 100% { text-shadow: 0 0 18px rgba(255, 244, 163, 1); } }
         @keyframes cyan-glow { 0% { text-shadow: 0 0 5px rgba(167, 255, 235, 0.4); } 100% { text-shadow: 0 0 18px rgba(167, 255, 235, 1); } }
+        .symbol-info { color: #ffffff; font-weight: bold; }
+        .empty-msg { color: #aaa; font-style: italic; font-size: 14px; text-align: center; padding: 10px; }
 
-        .symbol-info { color: #ffffff; font-weight: bold; } 
-
-        /* 요기! 텍스트 색상을 조금 더 밝게 조정했어요 */
-        .empty-msg { color: #aaa; font-style: italic; font-size: 14px; padding: 10px; text-align: center; }
+        /* [탭 2, 3: 기존 디자인 유지] */
+        .neon-pink { color: #ff007f; text-shadow: 0 0 8px #ff007f, 0 0 20px #ff007f; font-weight: bold; }
+        .neon-cyan { color: #00e5ff; text-shadow: 0 0 8px #00e5ff, 0 0 20px #00e5ff; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; background: #1e1e1e; border-radius: 15px; overflow: hidden; font-size: 15px; table-layout: fixed; margin-bottom: 20px; }
+        th { background: #333; color: #ccc; padding: 15px 5px; font-weight: 600; border-bottom: 3px solid #444; }
+        td { padding: 15px 5px; border-bottom: 1px solid #333; text-align: center; color: #eee; }
+        input { width: 90%; background: #2d2d2d; border: 1px solid #444; color: #fff; text-align: right; padding: 10px 12px; border-radius: 8px; font-size: 17px; font-weight: bold; }
+        .highlight { color: #ffffff; font-weight: bold; }
+        .unit-text { font-size: 13px; color: #888; margin-left: 3px; }
+        .special-label { font-size: 12px; color: #ff9e9e; display: block; margin-top: 4px; }
+        .sub-row td { background: #222; font-size: 12px; color: #aaa; padding: 8px 5px; }
+        .sub-label { color: #888; margin-right: 4px; }
+        .sub-val { color: #bbb; font-weight: bold; }
+        .gap { margin-right: 25px; }
+        .price-main { color: #fff4a3 !important; }
+        .tier-title { font-size: 24px; font-weight: bold; margin: 30px 0 10px 10px; color: #ffca28; border-left: 5px solid #ffca28; padding-left: 10px; }
+        .recipe-name-td { text-align: left !important; padding-left: 20px !important; font-weight: bold; font-size: 16px; } 
+        .minor-col { color: #777 !important; font-size: 13px !important; text-align: left !important; padding-left: 45px !important; }
+        .rank-col { width: 70px; font-weight: bold; }
+        .rank-1-row { background: rgba(255, 215, 0, 0.12) !important; }
+        .rank-1-row .rank-text { color: #ffd700; text-shadow: 0 0 10px #ffd700; font-size: 16px; font-weight: 900; }
+        .rank-2-row { background: rgba(192, 192, 192, 0.08) !important; }
+        .rank-2-row .rank-text { color: #e0e0e0; text-shadow: 0 0 8px #e0e0e0; }
+        .rank-3-row { background: rgba(205, 127, 50, 0.08) !important; }
+        .rank-3-row .rank-text { color: #cd7f32; text-shadow: 0 0 8px #cd7f32; }
+        .profit-val { color: #50ffab; font-weight: bold; font-size: 16px; }
+        .hour-val { color: #fff4a3; font-weight: bold; font-size: 18px; }
+        .recipe-info { font-size: 11px; color: #999; margin-left: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <button class="btn-clear" onclick="clearAll()">초기화 🧹</button>
-    <h2>🥔 동글랜드 요리 시세 분석기 🥕</h2>
-    <textarea id="inputText" placeholder="디스코드 시세를 복사해서 붙여넣으세요!"></textarea>
-    <button class="btn-analyze" onclick="analyzePrice()">가온아 고점 안뜨면 알지? 🚀</button>
-    <div id="timestamp"></div> 
-    <div id="resultArea"></div>
+    <button class="btn-clear" onclick="clearAllAnalysis()">초기화 🧹</button>
+    <h2>🥔 동글랜드 요리사 분석기 🥕</h2>
+    
+    <div class="tab-wrapper">
+        <button class="tab-btn active" onclick="openTab(event, 'marketTab')">요리 시세 분석기</button>
+        <button class="tab-btn" onclick="openTab(event, 'priceTab')">요리 단가 분석기</button>
+        <button class="tab-btn" onclick="openTab(event, 'profitTab')">요리 수익 순위표</button>
+    </div>
+
+    <div id="marketTab" class="tab-content active">
+        <textarea id="inputText" placeholder="디스코드 시세를 복사해서 붙여넣으세요!"></textarea>
+        <button class="btn-analyze" onclick="analyzePrice()">가온아 고점 안뜨면 알지? 🚀</button>
+        <div id="timestamp"></div>
+        <div id="resultArea"></div>
+    </div>
+
+    <div id="priceTab" class="tab-content">
+        <h3>농작물 &amp; 부재료 [상자 <span class="neon-pink">1셜커</span> 기준]</h3>
+        <table>
+            <thead><tr><th style="width: 25%;">재료명</th><th style="width: 20%;">매입가</th><th>1개</th><th>32개</th><th class="price-main">64개</th></tr></thead>
+            <tbody id="groupABody"></tbody>
+        </table>
+        <h3>해산물 [상자 <span class="neon-cyan">1세트</span> 기준]</h3>
+        <table>
+            <thead><tr><th style="width: 25%;">재료명</th><th style="width: 20%;">매입가</th><th>상자 1개</th><th>32개</th><th class="price-main">64개</th></tr></thead>
+            <tbody id="groupBBody"></tbody>
+        </table>
+    </div>
+
+    <div id="profitTab" class="tab-content">
+        <div id="tierContainer"></div>
+    </div>
 </div>
 
 <script>
+/* [데이터 정의] */
 const cookData = {
-    // 1차 요리
-    "타코": { tier: 1, max: 51 },
-    "해물카레": { tier: 1, max: 34 },
-    "고구마 맛탕": { tier: 1, max: 51 },
-    "고구마맛탕": { tier: 1, max: 51 }, // 공백 없는 버전 추가
-    "베이글": { tier: 1, max: 51 },
-    "고로케": { tier: 1, max: 22 },
-    "미트볼": { tier: 1, max: 51 },
-    "무트볼": { tier: 1, max: 51 }, // 무트볼 추가
-
-    // 2차 요리
-    "감자튀김": { tier: 2, max: 80 },
-    "콘 마카로니": { tier: 2, max: 85 },
-    "콘마카로니": { tier: 2, max: 85 }, // 공백 없는 버전 추가
-    "소고기미역국": { tier: 2, max: 74 },
-    "라면": { tier: 2, max: 85 },
-    "브리또": { tier: 2, max: 80 },
-
-    // 3차 요리
-    "스테이크": { tier: 3, max: 80 },
-    "전복죽": { tier: 3, max: 97 },
-    "와플": { tier: 3, max: 85 },
-    "마늘빵": { tier: 3, max: 85 },
-    "블루베리 치즈케이크": { tier: 3, max: 80 },
-    "블루베리치즈케이크": { tier: 3, max: 80 }, // 공백 없는 버전 추가
-
-    // 4차 요리
-    "핫도그": { tier: 4, max: 142 },
-    "고구마 팬케이크": { tier: 4, max: 89 },
-    "고구마팬케이크": { tier: 4, max: 89 }, // 공백 없는 버전 추가
-    "퐁신 오믈렛": { tier: 4, max: 89 },
-    "퐁신오믈렛": { tier: 4, max: 89 }, // 공백 없는 버전 추가
-    "홍합파스타": { tier: 4, max: 149 },
-    "로스트 치킨": { tier: 4, max: 89 },
-    "로스트치킨": { tier: 4, max: 89 }, // 공백 없는 버전 추가
-    "과일 케이크": { tier: 4, max: 89 },
-    "과일케이크": { tier: 4, max: 89 },
-    "샌드위치": { tier: 4, max: 142 }
+    "타코": { tier: 1, max: 51 }, "해물카레": { tier: 1, max: 34 }, "고구마 맛탕": { tier: 1, max: 51 }, "고구마맛탕": { tier: 1, max: 51 },
+    "베이글": { tier: 1, max: 51 }, "고로케": { tier: 1, max: 22 }, "미트볼": { tier: 1, max: 51 }, "무트볼": { tier: 1, max: 51 },
+    "감자튀김": { tier: 2, max: 80 }, "콘 마카로니": { tier: 2, max: 85 }, "콘마카로니": { tier: 2, max: 85 }, "소고기미역국": { tier: 2, max: 74 },
+    "라면": { tier: 2, max: 85 }, "브리또": { tier: 2, max: 80 },
+    "스테이크": { tier: 3, max: 80 }, "전복죽": { tier: 3, max: 97 }, "와플": { tier: 3, max: 85 }, "마늘빵": { tier: 3, max: 85 },
+    "블루베리 치즈케이크": { tier: 3, max: 80 }, "블루베리치즈케이크": { tier: 3, max: 80 },
+    "핫도그": { tier: 4, max: 142 }, "고구마 팬케이크": { tier: 4, max: 89 }, "고구마팬케이크": { tier: 4, max: 89 },
+    "퐁신 오믈렛": { tier: 4, max: 89 }, "퐁신오믈렛": { tier: 4, max: 89 }, "홍합파스타": { tier: 4, max: 149 },
+    "로스트 치킨": { tier: 4, max: 89 }, "로스트치킨": { tier: 4, max: 89 }, "과일 케이크": { tier: 4, max: 89 },
+    "과일케이크": { tier: 4, max: 89 }, "샌드위치": { tier: 4, max: 142 }
 };
 
-function clearAll() {
+const groupA_Config = [
+    { name: "고구마/무/콩/블루베리", conv: 15552, initial: 270000, hasSub: true },
+    { name: "파/마늘/옥수수/딸기", conv: 15552, initial: 432000, hasSub: true },
+    { name: "토마토/양상추", conv: 15552, initial: 756000, hasSub: true },
+    { name: "감자 상자", conv: 1728, initial: 0 }, { name: "당근 상자", conv: 1728, initial: 0 },
+    { name: "비트 상자", conv: 1728, initial: 14000 }, { name: "열매 상자", conv: 1728, initial: 17000 },
+    { name: "반죽", conv: 5184, initial: 34000, label: "건초 가공 기준" }, { name: "생고기", conv: 8640, initial: 55000, label: "가공 고기 기준" },
+    { name: "가공 우유", conv: 1728, initial: 0 }, { name: "가공 치즈", conv: 1728, initial: 0 }, { name: "호박", conv: 1728, initial: 3000 }
+];
+
+const groupB_Config = [
+    { name: "굴", initial: 12600 }, { name: "미역", initial: 13000 }, { name: "전복", initial: 18000 }, { name: "홍합", initial: 30000 }
+];
+
+// 베이글/타코 원가 수식 보존 (무2 반죽2 / 콩2 반죽2)
+const recipes = [
+    { tier: 1, name: "무트볼", sell: 51, ing: {"고구마/무/콩/블루베리":2, "당근 상자":2}, txt: "무2 당근2" },
+    { tier: 1, name: "고구마 맛탕", sell: 51, ing: {"고구마/무/콩/블루베리":2, "감자 상자":2}, txt: "고구마2 감자2" },
+    { tier: 1, name: "베이글", sell: 51, ing: {"고구마/무/콩/블루베리":2, "반죽":2}, txt: "무2 반죽2" },
+    { tier: 1, name: "타코", sell: 51, ing: {"고구마/무/콩/블루베리":2, "반죽":2}, txt: "콩2 반죽2" },
+    { tier: 1, name: "해물카레", sell: 34, ing: {"굴":2, "당근 상자":1}, txt: "굴2 당근1" },
+    { tier: 1, name: "고로케", sell: 22, ing: {"감자 상자":2, "당근 상자":2}, txt: "감자2 당근2" },
+    { tier: 2, name: "라면", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "비트 상자":1, "생고기":1}, txt: "파2 비트1 고기1" },
+    { tier: 2, name: "콘 마카로니", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "비트 상자":1, "가공 우유":1}, txt: "옥수수2 비트1 우유1" },
+    { tier: 2, name: "감자튀김", sell: 80, ing: {"고구마/무/콩/블루베리":3, "감자 상자":1, "생고기":1}, txt: "고구마3 감자1 고기1" },
+    { tier: 2, name: "브리또", sell: 80, ing: {"고구마/무/콩/블루베리":3, "반죽":1, "가공 치즈":1}, txt: "무3 반죽1 치즈1" },
+    { tier: 2, name: "소고기미역국", sell: 74, ing: {"미역":2, "감자 상자":1, "생고기":1}, txt: "미역2 감자1 고기1" },
+    { tier: 3, name: "전복죽", sell: 97, ing: {"전복":2, "당근 상자":1, "생고기":1}, txt: "전복2 당근1 고기1" },
+    { tier: 3, name: "와플", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "호박":1, "가공 우유":1}, txt: "딸기2 호박1 우유1" },
+    { tier: 3, name: "마늘빵", sell: 85, ing: {"파/마늘/옥수수/딸기":2, "호박":1, "생고기":1}, txt: "마늘2 호박1 고기1" },
+    { tier: 3, name: "스테이크", sell: 80, ing: {"고구마/무/콩/블루베리":3, "감자 상자":1, "생고기":1}, txt: "무3 감자1 고기1" },
+    { tier: 3, name: "블루베리 치즈케이크", sell: 80, ing: {"고구마/무/콩/블루베리":3, "반죽":1, "가공 치즈":1}, txt: "블루베리3 반죽1 치즈1" },
+    { tier: 4, name: "홍합 파스타", sell: 149, ing: {"홍합":2, "감자 상자":1, "가공 치즈":1}, txt: "홍합2 감자1 치즈1" },
+    { tier: 4, name: "핫도그", sell: 142, ing: {"토마토/양상추":2, "열매 상자":1, "생고기":1}, txt: "양상추2 열매1 고기1" },
+    { tier: 4, name: "샌드위치", sell: 142, ing: {"토마토/양상추":2, "열매 상자":1, "가공 치즈":1}, txt: "토마토2 열매1 치즈1" },
+    { tier: 4, name: "고구마 팬케이크", sell: 89, ing: {"고구마/무/콩/블루베리":3, "반죽":1, "생고기":1}, txt: "고구마3 반죽1 고기1" },
+    { tier: 4, name: "퐁신 오믈렛", sell: 89, ing: {"고구마/무/콩/블루베리":3, "비트 상자":1, "가공 치즈":1}, txt: "무3 비트1 치즈1" },
+    { tier: 4, name: "로스트 치킨", sell: 89, ing: {"고구마/무/콩/블루베리":3, "감자 상자":1, "생고기":1}, txt: "콩3 감자1 고기1" },
+    { tier: 4, name: "과일 케이크", sell: 89, ing: {"고구마/무/콩/블루베리":3, "당근 상자":1, "가공 우유":1}, txt: "블루베리3 당근1 우유1" }
+];
+
+let unitPrices = {};
+
+/* [탭 전환 로직] */
+function openTab(evt, tabName) {
+    const contents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+    const btns = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
+/* [기능 1: 요리 시세 분석기] */
+function clearAllAnalysis() {
     document.getElementById('inputText').value = "";
     document.getElementById('resultArea').innerHTML = "";
     document.getElementById('timestamp').innerHTML = "";
@@ -120,62 +183,149 @@ function analyzePrice() {
     const regex = /\[(.+?)\]\s*\|\s*\d+\s*→\s*(\d+)/g;
     let results = { 1: [], 2: [], 3: [], 4: [] };
     let match;
-
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    let hours = now.getHours();
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? '오후' : '오전';
-    hours = hours % 12 || 12; 
-    const timeString = `${year}년 ${month}월 ${day}일 ${ampm} ${hours}시 ${minutes}분 기준`;
-    
+    const timeString = `${now.getFullYear()}년 ${String(now.getMonth() + 1).padStart(2, '0')}월 ${String(now.getDate()).padStart(2, '0')}일 ${now.getHours() >= 12 ? '오후' : '오전'} ${now.getHours() % 12 || 12}시 ${String(now.getMinutes()).padStart(2, '0')}분 기준`;
     document.getElementById('timestamp').innerHTML = timeString + " <<";
-
     while ((match = regex.exec(text)) !== null) {
         let name = match[1].trim();
         let currPrice = parseInt(match[2]);
-        
         if (cookData[name]) {
             let target = cookData[name];
             let htmlContent = "";
-
-            if (currPrice === target.max) {
-                htmlContent = `<span class="star">⭐</span><span class="max-name">${name}</span> <span class="symbol-info">「 💕최고가💕｜${currPrice} 」</span>`;
-            } else if (currPrice === target.max - 1) {
-                htmlContent = `<span class="star">⭐</span><span class="minus1-name">${name}</span> <span class="symbol-info">「 -1 원｜${currPrice} 」</span>`;
-            } else if (currPrice === target.max - 2) {
-                htmlContent = `<span class="star">⭐</span><span class="minus2-name">${name}</span> <span class="symbol-info">「 -2 원｜${currPrice} 」</span>`;
-            }
-
-            if (htmlContent !== "") {
-                results[target.tier].push(htmlContent);
-            }
+            if (currPrice === target.max) htmlContent = `<span class="max-name">⭐ ${name}</span> <span class="symbol-info">「 💕최고가💕｜${currPrice} 」</span>`;
+            else if (currPrice === target.max - 1) htmlContent = `<span class="minus1-name">⭐ ${name}</span> <span class="symbol-info">「 -1 원｜${currPrice} 」</span>`;
+            else if (currPrice === target.max - 2) htmlContent = `<span class="minus2-name">⭐ ${name}</span> <span class="symbol-info">「 -2 원｜${currPrice} 」</span>`;
+            if (htmlContent !== "") results[target.tier].push(htmlContent);
         }
     }
-    renderResults(results);
+    renderMarketResults(results);
 }
 
-function renderResults(data) {
+function renderMarketResults(data) {
     let html = "";
     for (let i = 1; i <= 4; i++) {
-        html += `<div class="tier-section">
-                    <div class="tier-title">${i}차 요리</div>`;
-        
-        if (data[i].length === 0) {
-            html += `<div class="empty-msg">기다림의 미학... 고점아 힘내자 ( •̀ ω •́ )</div>`;
-        } else {
-            data[i].forEach(itemHtml => {
-                html += `<div class="item-row">${itemHtml}</div>`;
-            });
-        }
+        html += `<div class="tier-section"><div class="tier-title" style="border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px;">${i}차 요리</div>`;
+        if (data[i].length === 0) html += `<div class="empty-msg">기다림의 미학... 고점아 힘내자 ( •̀ ω •́ )</div>`;
+        else data[i].forEach(itemHtml => { html += `<div class="item-row">${itemHtml}</div>`; });
         html += `</div>`;
     }
     document.getElementById('resultArea').innerHTML = html;
 }
+
+/* [기능 2: 단가 분석기 및 계산 로직] */
+function formatVal(num) { return num === 0 ? "0" : Number(num.toFixed(2)).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+function formatRound(num) { return Math.round(num).toLocaleString(); }
+
+function handleInput(el, type, name) {
+    let rawVal = el.value.replace(/[^0-9]/g, '');
+    if (rawVal === "") rawVal = "0";
+    el.value = parseInt(rawVal).toLocaleString();
+    const numericVal = parseInt(rawVal);
+    if (type === 'A') calculateA(name, numericVal);
+    else calculateB(name, numericVal);
+    updateProfits();
+}
+
+function calculateA(name, price) {
+    const safeId = name.replace(/\//g, '').replace(/ /g, '');
+    const row = document.getElementById(`row-${safeId}`);
+    const config = groupA_Config.find(m => m.name === name);
+    const unitPrice = price / config.conv;
+    unitPrices[name] = unitPrice;
+    row.querySelector('.val-1').innerText = formatVal(unitPrice);
+    row.querySelector('.val-32').innerText = formatVal(unitPrice * 32);
+    row.querySelector('.val-64').innerText = formatVal(unitPrice * 64);
+    if (config.hasSub) {
+        const subRow = document.getElementById(`sub-${safeId}`);
+        subRow.querySelector('.val-set1').innerText = formatVal(price / 27);
+        subRow.querySelector('.val-set3').innerText = formatVal(price / 9);
+    }
+}
+
+function calculateB(name, price) {
+    const safeId = name.replace(/ /g, '');
+    const row = document.getElementById(`row-${safeId}`);
+    const price64 = price / 9; 
+    const unitPrice = price64 / 64;
+    unitPrices[name] = unitPrice;
+    row.querySelector('.val-box1').innerText = formatVal(unitPrice * 9);
+    row.querySelector('.val-32').innerText = formatVal(unitPrice * 32);
+    row.querySelector('.val-64').innerText = formatVal(price64);
+    const subRow = document.getElementById(`sub-b-${safeId}`);
+    subRow.querySelector('.val-set3').innerText = formatVal(price * 3);
+    subRow.querySelector('.val-line1').innerText = formatVal(price * 9);
+    subRow.querySelector('.val-line2').innerText = formatVal(price * 18);
+    subRow.querySelector('.val-shulker').innerText = formatVal(price * 27);
+}
+
+function updateProfits() {
+    const container = document.getElementById('tierContainer');
+    container.innerHTML = '';
+    for (let t = 1; t <= 4; t++) {
+        const tierRecipes = recipes.filter(r => r.tier === t).map(r => {
+            let unitCost = 0;
+            for (let ing in r.ing) unitCost += (unitPrices[ing] || 0) * r.ing[ing];
+            const cost32 = unitCost * 32;
+            const profit32 = (r.sell * 32) - cost32;
+            return { ...r, cost32, profit32, hourProfit: profit32 * 24 };
+        }).sort((a, b) => b.profit32 - a.profit32);
+
+        const section = document.createElement('div');
+        section.innerHTML = `<div class="tier-title">${t}차 요리 순위</div>
+            <table><thead><tr><th class="rank-col">순위</th><th style="width:23%">요리명</th><th style="width:28%">최고 판매가/요리 1회 재료원가</th><th>1회 순수익</th><th style="color:#ffca28">1시간 순수익</th></tr></thead>
+            <tbody>${tierRecipes.map((r, idx) => {
+                const rank = idx + 1;
+                const rowClass = rank <= 3 ? `rank-${rank}-row` : '';
+                return `<tr class="${rowClass}"><td class="rank-col"><span class="rank-text">${rank}위</span></td>
+                    <td class="recipe-name-td">${r.name}<span class="recipe-info">(${r.txt})</span></td>
+                    <td class="minor-col">${r.sell} / ${formatRound(r.cost32)}</td>
+                    <td class="profit-val">${formatRound(r.profit32)}원</td>
+                    <td class="hour-val">${formatRound(r.hourProfit)}원</td></tr>`;
+            }).join('')}</tbody></table>`;
+        container.appendChild(section);
+    }
+}
+
+function init() {
+    const aBody = document.getElementById('groupABody');
+    groupA_Config.forEach(m => {
+        const safeId = m.name.replace(/\//g, '').replace(/ /g, '');
+        const tr = document.createElement('tr');
+        tr.id = `row-${safeId}`;
+        tr.innerHTML = `<td style="text-align:left; padding-left:25px;"><b>${m.name}</b>${m.label ? `<span class="special-label">${m.label}</span>` : ''}</td>
+            <td><input type="text" value="${m.initial.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
+            <td><span class="val-1 highlight">0</span><span class="unit-text">원</span></td>
+            <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
+            <td><span class="val-64 highlight price-main">0</span><span class="unit-text">원</span></td>`;
+        aBody.appendChild(tr);
+        if (m.hasSub) {
+            const subTr = document.createElement('tr');
+            subTr.id = `sub-${safeId}`; subTr.className = 'sub-row';
+            subTr.innerHTML = `<td colspan="2"></td><td colspan="3" style="text-align:left; padding-left:15px;"><span class="gap"><span class="sub-label">상자 1세트:</span><span class="val-set1 sub-val">0</span>원</span><span class="gap"><span class="sub-label">상자 3세트(1셜커):</span><span class="val-set3 sub-val">0</span>원</span></td>`;
+            aBody.appendChild(subTr);
+        }
+        calculateA(m.name, m.initial);
+    });
+    const bBody = document.getElementById('groupBBody');
+    groupB_Config.forEach(item => {
+        const safeId = item.name.replace(/ /g, '');
+        const tr = document.createElement('tr');
+        tr.id = `row-${safeId}`;
+        tr.innerHTML = `<td style="text-align:left; padding-left:25px;"><b>${item.name}</b></td>
+            <td><input type="text" value="${item.initial.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
+            <td><span class="val-box1 highlight">0</span><span class="unit-text">원</span></td>
+            <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
+            <td><span class="val-64 highlight price-main">0</span><span class="unit-text">원</span></td>`;
+        bBody.appendChild(tr);
+        const subTr = document.createElement('tr');
+        subTr.id = `sub-b-${safeId}`; subTr.className = 'sub-row';
+        subTr.innerHTML = `<td colspan="2"></td><td colspan="3" style="text-align:left; padding-left:15px;"><span class="gap"><span class="sub-label">3세트:</span><span class="val-set3 sub-val">0</span>원</span><span class="gap"><span class="sub-label">9세트:</span><span class="val-line1 sub-val">0</span>원</span><span class="gap"><span class="sub-label">18세트:</span><span class="val-line2 sub-val">0</span>원</span><span class="gap"><span class="sub-label">1셜커:</span><span class="val-shulker sub-val">0</span>원</span></td>`;
+        bBody.appendChild(subTr);
+        calculateB(item.name, item.initial);
+    });
+    updateProfits();
+}
+init();
 </script>
-
-
-
-</body></html>
+</body>
+</html>
