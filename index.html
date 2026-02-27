@@ -54,7 +54,6 @@
         .gap { margin-right: 15px; }
         .price-main { color: #fff4a3 !important; }
         .tier-title { font-size: 22px; font-weight: bold; margin: 25px 0 10px 5px; color: #ffca28; border-left: 5px solid #ffca28; padding-left: 10px; }
-        /* 요리명 너비 수정 (6번) */
         .recipe-name-td { text-align: left !important; padding-left: 15px !important; font-weight: bold; font-size: 16px; width: 35%; white-space: nowrap; } 
         .minor-col { color: #777 !important; font-size: 13px !important; text-align: left !important; padding-left: 20px !important; }
         .rank-col { width: 60px; font-weight: bold; }
@@ -185,7 +184,6 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).classList.add("active");
     evt.currentTarget.classList.add("active");
 
-    // 버튼 표시 제어 (4, 5번)
     document.getElementById('mainClearBtn').style.display = (tabName === 'marketTab') ? 'block' : 'none';
     document.getElementById('mainRefreshBtn').style.display = (tabName === 'profitTab') ? 'block' : 'none';
 }
@@ -283,7 +281,6 @@ function updateProfits() {
     const container = document.getElementById('tierContainer');
     container.innerHTML = '';
     for (let t = 1; t <= 4; t++) {
-        // 활성화된 요리만 필터링 (순수익 계산 시 소수점 유지)
         const tierRecipes = recipes.filter(r => r.tier === t && activeStatus[r.name]).map(r => {
             let unitCost = 0;
             for (let ing in r.ing) unitCost += (unitPrices[ing] || 0) * r.ing[ing];
@@ -292,7 +289,6 @@ function updateProfits() {
             return { ...r, cost32, profit32, hourProfit: profit32 * 24 };
         }).sort((a, b) => b.profit32 - a.profit32);
 
-        // 공동 순위 로직 적용 (소수점 원본 데이터 기반으로 비교)
         let rank = 1;
         for (let i = 0; i < tierRecipes.length; i++) {
             if (i > 0 && tierRecipes[i].profit32 < tierRecipes[i-1].profit32) {
@@ -302,7 +298,6 @@ function updateProfits() {
         }
 
         const section = document.createElement('div');
-        // 제목 수정: "최고 판매가/요리 1회 재료원가" -> "최고 판매가/재료원가"
         section.innerHTML = `<div class="tier-title">${t}차 요리 순위</div>
             <table><thead><tr><th class="rank-col">순위</th><th style="width:35%">요리명</th><th>최고 판매가/재료원가</th><th>1회 순수익</th><th style="color:#ffca28">1시간 순수익</th></tr></thead>
             <tbody>${tierRecipes.map((r) => {
@@ -339,8 +334,9 @@ function init() {
         const safeId = m.name.replace(/\//g, '').replace(/ /g, '');
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
+        // 인풋에 클래스 추가
         tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${m.name}</b>${m.label ? `<span class="special-label">${m.label}</span>` : ''}</td>
-            <td><input type="text" value="${m.initial.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
+            <td><input type="text" class="price-input" value="${m.initial.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
             <td><span class="val-1 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-64 highlight price-main">0</span><span class="unit-text">원</span></td>`;
@@ -353,13 +349,15 @@ function init() {
         }
         calculateA(m.name, m.initial);
     });
+
     const bBody = document.getElementById('groupBBody');
     groupB_Config.forEach(item => {
         const safeId = item.name.replace(/ /g, '');
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
+        // 인풋에 클래스 추가
         tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${item.name}</b></td>
-            <td><input type="text" value="${item.initial.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
+            <td><input type="text" class="price-input" value="${item.initial.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
             <td><span class="val-box1 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-64 highlight price-main">0</span><span class="unit-text">원</span></td>`;
@@ -370,6 +368,24 @@ function init() {
         bBody.appendChild(subTr);
         calculateB(item.name, item.initial);
     });
+
+    // 엔터키 자동 줄바꿈 로직
+    const allInputs = document.querySelectorAll('.price-input');
+    allInputs.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const nextInput = allInputs[index + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                    nextInput.select();
+                } else {
+                    input.blur();
+                }
+            }
+        });
+    });
+
     updateProfits();
 }
 init();
