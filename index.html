@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>🥔 숭늉의 동글랜드 요리분석기 🥕</title>
     <style>
-        /* 기본 레이아웃 스타일 */
+        /* [원본] 기본 레이아웃 스타일 */
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; font-size: 16px; }
         .container { background: #262626; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); width: 95%; max-width: 900px; border: 1px solid #333; position: relative; }
         
-        /* 탭 스타일 */
+        /* [원본] 탭 스타일 */
         .tab-wrapper { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #444; padding-bottom: 15px; width: 100%; justify-content: center; }
         .tab-btn { background: #333; border: none; color: #888; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 17px; font-weight: bold; transition: 0.3s; }
         .tab-btn.active { background: #ffca28; color: #000; box-shadow: 0 0 15px rgba(255, 202, 40, 0.4); }
@@ -67,12 +67,37 @@
         .hour-val { color: #fff4a3; font-weight: bold; font-size: 18px; }
         .recipe-info { font-size: 11px; color: #999; margin-left: 5px; white-space: nowrap; }
 
-        /* 체크박스 스타일 */
+        /* [원본] 체크박스 스타일 */
         .cook-chk { cursor: pointer; width: 18px; height: 18px; vertical-align: middle; margin-right: 10px; }
 
-        /* 순위갱신 아이콘 (4번) */
+        /* [원본] 순위갱신 아이콘 (4번) */
         .btn-refresh { position: absolute; top: 20px; right: 20px; padding: 6px 12px; background: #ffca28; color: #000; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; display: none; }
         .btn-refresh:hover { background: #ffd54f; }
+
+        /* ----------------------------------------------------------- */
+        /* [111.html] 농작물 계산기 전용 스타일 (기존 스타일 유지) */
+        /* ----------------------------------------------------------- */
+        .calc-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #333; padding: 20px; border-radius: 15px; border: 1px solid #ffca28; }
+        .calc-total-info { display: flex; flex-direction: column; }
+        .calc-total-label { font-size: 14px; color: #aaa; margin-bottom: 5px; text-align: left; }
+        .calc-total-amount { font-size: 28px; color: #ffca28; font-weight: bold; }
+        .calc-btn-reset { background: #f04747; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .calc-btn-reset:hover { background: #ff5c5c; transform: translateY(-2px); }
+        .calc-tier-header { display: flex; align-items: center; justify-content: space-between; margin: 35px 0 15px 0; border-left: 5px solid #ffca28; padding-left: 12px; gap: 10px; }
+        .calc-tier-title { font-size: 20px; color: #ffca28; font-weight: bold; margin: 0; white-space: nowrap; }
+        .calc-batch-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .calc-lock-wrapper { display: flex; align-items: center; gap: 5px; font-size: 13px; color: #bbb; cursor: pointer; white-space: nowrap; }
+        .calc-lock-wrapper input { width: 15px; height: 15px; cursor: pointer; margin: 0; }
+        .calc-batch-input-wrap { display: flex; align-items: center; background: #333; padding: 5px 10px; border-radius: 8px; border: 1px dashed #666; white-space: nowrap; }
+        .calc-batch-label { font-size: 12px; color: #bbb; margin-right: 6px; white-space: nowrap; }
+        .calc-batch-input { width: 55px; background: transparent; border: none; color: #ffca28; text-align: right; font-size: 14px; font-weight: bold; padding: 2px; }
+        .calc-batch-input:focus { outline: none; color: #fff; }
+        input.nav-input { width: 95%; background: #2d2d2d; border: 1px solid #444; color: #fff; text-align: right; padding: 10px; border-radius: 8px; font-size: 16px; font-weight: bold; transition: 0.2s; box-sizing: border-box; }
+        input.nav-input:focus { outline: none; border-color: #ffca28; background: #383838; box-shadow: 0 0 8px rgba(255, 202, 40, 0.2); }
+        input.nav-input:read-only { background: #1a1a1a; color: #666; border-color: #222; cursor: not-allowed; }
+        .calc-row-name { text-align: left; font-weight: bold; padding-left: 20px; width: 30%; }
+        .calc-price-text { color: #fff4a3; font-weight: bold; font-size: 18px; }
+        .calc-unit { font-size: 13px; color: #777; margin-left: 4px; }
     </style>
 </head>
 <body>
@@ -86,6 +111,7 @@
         <button class="tab-btn active" onclick="openTab(event, 'marketTab')">요리 시세 분석기</button>
         <button class="tab-btn" onclick="openTab(event, 'priceTab')">요리 단가 분석기</button>
         <button class="tab-btn" onclick="openTab(event, 'profitTab')">요리 수익 순위표</button>
+        <button class="tab-btn" onclick="openTab(event, 'calcTab')">농작물 계산기</button>
     </div>
 
     <div id="marketTab" class="tab-content active">
@@ -111,10 +137,26 @@
     <div id="profitTab" class="tab-content">
         <div id="tierContainer"></div>
     </div>
+
+    <div id="calcTab" class="tab-content">
+        <div class="calc-header-row">
+            <div class="calc-total-info">
+                <span class="calc-total-label">모든 작물 구매 합계</span>
+                <div>
+                    <span id="grandTotal" class="calc-total-amount">0</span>
+                    <span class="calc-total-amount" style="font-size:18px; margin-left:5px;">원</span>
+                </div>
+            </div>
+            <button class="calc-btn-reset" onclick="resetQuantities()">구매수량 초기화 🗑️</button>
+        </div>
+        <div id="calculatorBody"></div>
+    </div>
 </div>
 
 <script>
-/* [데이터 정의] */
+/* ----------------------------------------------------------- */
+/* [기존 index.html 스크립트] */
+/* ----------------------------------------------------------- */
 const cookData = {
     "타코": { tier: 1, max: 51 }, "해물카레": { tier: 1, max: 34 }, "고구마 맛탕": { tier: 1, max: 51 }, "고구마맛탕": { tier: 1, max: 51 },
     "베이글": { tier: 1, max: 51 }, "고로케": { tier: 1, max: 22 }, "미트볼": { tier: 1, max: 51 }, "무트볼": { tier: 1, max: 51 },
@@ -171,10 +213,7 @@ const recipes = [
 let unitPrices = {};
 let activeStatus = JSON.parse(localStorage.getItem('cookActiveStatus')) || {};
 
-// 초기 활성화 상태 설정
-recipes.forEach(r => {
-    if (activeStatus[r.name] === undefined) activeStatus[r.name] = true;
-});
+recipes.forEach(r => { if (activeStatus[r.name] === undefined) activeStatus[r.name] = true; });
 
 function openTab(evt, tabName) {
     const contents = document.getElementsByClassName("tab-content");
@@ -246,13 +285,17 @@ function calculateA(name, price) {
     const config = groupA_Config.find(m => m.name === name);
     const unitPrice = price / config.conv;
     unitPrices[name] = unitPrice;
-    row.querySelector('.val-1').innerText = formatVal(unitPrice);
-    row.querySelector('.val-32').innerText = formatVal(unitPrice * 32);
-    row.querySelector('.val-64').innerText = formatVal(unitPrice * 64);
-    if (config.hasSub) {
-        const subRow = document.getElementById(`sub-${safeId}`);
-        subRow.querySelector('.val-set1').innerText = formatVal(price / 27);
-        subRow.querySelector('.val-set3').innerText = formatVal(price / 9);
+    if(row) {
+        row.querySelector('.val-1').innerText = formatVal(unitPrice);
+        row.querySelector('.val-32').innerText = formatVal(unitPrice * 32);
+        row.querySelector('.val-64').innerText = formatVal(unitPrice * 64);
+        if (config.hasSub) {
+            const subRow = document.getElementById(`sub-${safeId}`);
+            if(subRow) {
+                subRow.querySelector('.val-set1').innerText = formatVal(price / 27);
+                subRow.querySelector('.val-set3').innerText = formatVal(price / 9);
+            }
+        }
     }
 }
 
@@ -262,14 +305,18 @@ function calculateB(name, price) {
     const price64 = price / 9; 
     const unitPrice = price64 / 64;
     unitPrices[name] = unitPrice;
-    row.querySelector('.val-box1').innerText = formatVal(unitPrice * 9);
-    row.querySelector('.val-32').innerText = formatVal(unitPrice * 32);
-    row.querySelector('.val-64').innerText = formatVal(price64);
-    const subRow = document.getElementById(`sub-b-${safeId}`);
-    subRow.querySelector('.val-set3').innerText = formatVal(price * 3);
-    subRow.querySelector('.val-line1').innerText = formatVal(price * 9);
-    subRow.querySelector('.val-line2').innerText = formatVal(price * 18);
-    subRow.querySelector('.val-shulker').innerText = formatVal(price * 27);
+    if(row) {
+        row.querySelector('.val-box1').innerText = formatVal(unitPrice * 9);
+        row.querySelector('.val-32').innerText = formatVal(unitPrice * 32);
+        row.querySelector('.val-64').innerText = formatVal(price64);
+        const subRow = document.getElementById(`sub-b-${safeId}`);
+        if(subRow) {
+            subRow.querySelector('.val-set3').innerText = formatVal(price * 3);
+            subRow.querySelector('.val-line1').innerText = formatVal(price * 9);
+            subRow.querySelector('.val-line2').innerText = formatVal(price * 18);
+            subRow.querySelector('.val-shulker').innerText = formatVal(price * 27);
+        }
+    }
 }
 
 function toggleActive(name) {
@@ -279,6 +326,7 @@ function toggleActive(name) {
 
 function updateProfits() {
     const container = document.getElementById('tierContainer');
+    if(!container) return;
     container.innerHTML = '';
     for (let t = 1; t <= 4; t++) {
         const tierRecipes = recipes.filter(r => r.tier === t && activeStatus[r.name]).map(r => {
@@ -291,9 +339,7 @@ function updateProfits() {
 
         let rank = 1;
         for (let i = 0; i < tierRecipes.length; i++) {
-            if (i > 0 && tierRecipes[i].profit32 < tierRecipes[i-1].profit32) {
-                rank = i + 1;
-            }
+            if (i > 0 && tierRecipes[i].profit32 < tierRecipes[i-1].profit32) rank = i + 1;
             tierRecipes[i].currentRank = rank;
         }
 
@@ -326,7 +372,173 @@ function updateProfits() {
     }
 }
 
+/* ----------------------------------------------------------- */
+/* [111.html 통합 스크립트] - 충돌 방지 위해 함수명 수정 */
+/* ----------------------------------------------------------- */
+const cropData = [
+    { id: "tier3", title: "3티어 작물", items: ["고구마", "무", "콩", "블루베리"] },
+    { id: "tier2", title: "2티어 작물", items: ["마늘", "옥수수", "딸기", "파"] },
+    { id: "tier1", title: "1티어 작물", items: ["양상추", "토마토"] }
+];
+
+const CROP_STORAGE_KEY = 'sungnyung_crop_prices_v2';
+let savedPrices = JSON.parse(localStorage.getItem(CROP_STORAGE_KEY)) || {};
+
+function initCalculator() {
+    const container = document.getElementById('calculatorBody');
+    if(!container) return;
+    container.innerHTML = '';
+    let currentRow = 0;
+
+    cropData.forEach((tier) => {
+        const section = document.createElement('div');
+        section.innerHTML = `
+            <div class="calc-tier-header">
+                <h3 class="calc-tier-title">${tier.title}</h3>
+                <div class="calc-batch-controls">
+                    <label class="calc-lock-wrapper">
+                        <input type="checkbox" class="lock-chk" onchange="toggleTierLock('${tier.id}', this.checked)"> 매입가 고정 🔒
+                    </label>
+                    <div class="calc-batch-input-wrap">
+                        <span class="calc-batch-label">매입가 일괄 입력:</span>
+                        <input type="text" class="calc-batch-input nav-input tier-batch-${tier.id}" placeholder="0" 
+                            data-r="${currentRow}" data-c="0"
+                            onfocus="this.select()" 
+                            oninput="applyBatchPrice('${tier.id}', this.value)">
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(section);
+        currentRow++;
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr><th>작물명</th><th style="width:25%">매입가</th><th style="width:20%">구매수량</th><th style="width:25%">가격</th></tr>
+            </thead>
+            <tbody>
+                ${tier.items.map((name, idx) => {
+                    const r = currentRow + idx;
+                    return `
+                        <tr data-tier="${tier.id}">
+                            <td class="calc-row-name">${name}</td>
+                            <td>
+                                <input type="text" class="input-price nav-input tier-price-${tier.id}" 
+                                    data-name="${name}" data-r="${r}" data-c="0"
+                                    value="${(savedPrices[name] || 0).toLocaleString()}" 
+                                    onfocus="this.select()" oninput="calculateRowPrice('${name}')">
+                            </td>
+                            <td>
+                                <input type="text" class="input-qty nav-input" 
+                                    data-name="${name}" data-r="${r}" data-c="1"
+                                    value="0" 
+                                    onfocus="this.select()" oninput="calculateRowPrice('${name}')">
+                            </td>
+                            <td><span id="total-${name}" class="calc-price-text">0</span><span class="calc-unit">원</span></td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        `;
+        container.appendChild(table);
+        currentRow += tier.items.length;
+    });
+
+    document.addEventListener('keydown', handleCalcNavKeyDown);
+}
+
+function toggleTierLock(tierId, isLocked) {
+    const batchInput = document.querySelector(`.tier-batch-${tierId}`);
+    const priceInputs = document.querySelectorAll(`.tier-price-${tierId}`);
+    if(batchInput) batchInput.readOnly = isLocked;
+    priceInputs.forEach(input => {
+        input.readOnly = isLocked;
+        input.tabIndex = isLocked ? -1 : 0;
+    });
+}
+
+function handleCalcNavKeyDown(e) {
+    const cur = e.target;
+    if (!cur.classList.contains('nav-input')) return;
+
+    let r = parseInt(cur.dataset.r);
+    let c = parseInt(cur.dataset.c);
+    let next;
+
+    const findNext = (row, col, direction) => {
+        let nextEl = document.querySelector(`.nav-input[data-r="${row}"][data-c="${col}"]`);
+        if (nextEl && nextEl.readOnly) {
+            if (direction === 'ArrowRight' || direction === 'Enter') return findNext(row, col + 1, direction) || findNext(row + 1, 0, direction);
+            if (direction === 'ArrowLeft') return findNext(row, col - 1, direction);
+            if (direction === 'ArrowDown') return findNext(row + 1, col, direction);
+            if (direction === 'ArrowUp') return findNext(row - 1, col, direction);
+        }
+        return nextEl;
+    };
+
+    switch(e.key) {
+        case 'ArrowRight': next = findNext(r, c + 1, e.key); break;
+        case 'ArrowLeft':  next = findNext(r, c - 1, e.key); break;
+        case 'ArrowDown':  e.preventDefault(); next = findNext(r + 1, c, e.key); break;
+        case 'ArrowUp':    e.preventDefault(); next = findNext(r - 1, c, e.key); break;
+        case 'Enter':
+            e.preventDefault();
+            if (c === 0 && !cur.classList.contains('calc-batch-input')) next = findNext(r, 1, e.key);
+            else next = findNext(r + 1, 0, e.key);
+            break;
+    }
+    if (next) next.focus();
+}
+
+function applyBatchPrice(tierId, val) {
+    const price = parseInt(val.replace(/[^0-9]/g, '')) || 0;
+    const tierRows = document.querySelectorAll(`tr[data-tier="${tierId}"]`);
+    tierRows.forEach(row => {
+        const priceInput = row.querySelector('.input-price');
+        if(priceInput) {
+            priceInput.value = price.toLocaleString();
+            calculateRowPrice(priceInput.dataset.name);
+        }
+    });
+}
+
+function calculateRowPrice(name) {
+    const priceInput = document.querySelector(`.input-price[data-name="${name}"]`);
+    const qtyInput = document.querySelector(`.input-qty[data-name="${name}"]`);
+    const totalSpan = document.getElementById(`total-${name}`);
+    if(!priceInput || !qtyInput) return;
+    let price = parseInt(priceInput.value.replace(/[^0-9]/g, '')) || 0;
+    let qty = parseInt(qtyInput.value.replace(/[^0-9]/g, '')) || 0;
+    priceInput.value = price.toLocaleString();
+    qtyInput.value = qty.toLocaleString();
+    totalSpan.innerText = (price * qty).toLocaleString();
+    savedPrices[name] = price;
+    localStorage.setItem(CROP_STORAGE_KEY, JSON.stringify(savedPrices));
+    updateGrandTotal();
+}
+
+function updateGrandTotal() {
+    let grandTotal = 0;
+    document.querySelectorAll('.calc-price-text').forEach(span => {
+        grandTotal += parseInt(span.innerText.replace(/[^0-9]/g, '')) || 0;
+    });
+    const gtEl = document.getElementById('grandTotal');
+    if(gtEl) gtEl.innerText = grandTotal.toLocaleString();
+}
+
+function resetQuantities() {
+    document.querySelectorAll('.input-qty').forEach(input => {
+        input.value = "0";
+        calculateRowPrice(input.dataset.name);
+    });
+}
+
+/* ----------------------------------------------------------- */
+/* [메인 초기화 실행] */
+/* ----------------------------------------------------------- */
 function init() {
+    // 탭 1, 2 초기화
     document.getElementById('mainClearBtn').style.display = 'block';
 
     const aBody = document.getElementById('groupABody');
@@ -334,7 +546,6 @@ function init() {
         const safeId = m.name.replace(/\//g, '').replace(/ /g, '');
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
-        // 인풋에 클래스 추가
         tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${m.name}</b>${m.label ? `<span class="special-label">${m.label}</span>` : ''}</td>
             <td><input type="text" class="price-input" value="${m.initial.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
             <td><span class="val-1 highlight">0</span><span class="unit-text">원</span></td>
@@ -355,7 +566,6 @@ function init() {
         const safeId = item.name.replace(/ /g, '');
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
-        // 인풋에 클래스 추가
         tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${item.name}</b></td>
             <td><input type="text" class="price-input" value="${item.initial.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
             <td><span class="val-box1 highlight">0</span><span class="unit-text">원</span></td>
@@ -369,24 +579,23 @@ function init() {
         calculateB(item.name, item.initial);
     });
 
-    // 엔터키 자동 줄바꿈 로직
     const allInputs = document.querySelectorAll('.price-input');
     allInputs.forEach((input, index) => {
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const nextInput = allInputs[index + 1];
-                if (nextInput) {
-                    nextInput.focus();
-                    nextInput.select();
-                } else {
-                    input.blur();
-                }
+                if (nextInput) { nextInput.focus(); nextInput.select(); } 
+                else { input.blur(); }
             }
         });
     });
 
+    // 탭 3 초기화
     updateProfits();
+
+    // 탭 4 초기화 (111.html 기능)
+    initCalculator();
 }
 init();
 </script>
