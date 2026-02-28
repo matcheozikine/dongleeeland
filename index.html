@@ -74,9 +74,7 @@
         .btn-refresh { position: absolute; top: 20px; right: 20px; padding: 6px 12px; background: #ffca28; color: #000; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; display: none; }
         .btn-refresh:hover { background: #ffd54f; }
 
-        /* ----------------------------------------------------------- */
-        /* [111.html] 농작물 계산기 전용 스타일 (기존 스타일 유지) */
-        /* ----------------------------------------------------------- */
+        /* [커스텀 재료 계산기] 전용 스타일 */
         .calc-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #333; padding: 20px; border-radius: 15px; border: 1px solid #ffca28; }
         .calc-total-info { display: flex; flex-direction: column; }
         .calc-total-label { font-size: 14px; color: #aaa; margin-bottom: 5px; text-align: left; }
@@ -111,7 +109,7 @@
         <button class="tab-btn active" onclick="openTab(event, 'marketTab')">요리 시세 분석기</button>
         <button class="tab-btn" onclick="openTab(event, 'priceTab')">요리 단가 분석기</button>
         <button class="tab-btn" onclick="openTab(event, 'profitTab')">요리 수익 순위표</button>
-        <button class="tab-btn" onclick="openTab(event, 'calcTab')">농작물 계산기</button>
+        <button class="tab-btn" onclick="openTab(event, 'calcTab')">커스텀 재료 계산기</button>
     </div>
 
     <div id="marketTab" class="tab-content active">
@@ -141,7 +139,7 @@
     <div id="calcTab" class="tab-content">
         <div class="calc-header-row">
             <div class="calc-total-info">
-                <span class="calc-total-label">모든 작물 구매 합계</span>
+                <span class="calc-total-label">모든 재료 금액 합계</span>
                 <div>
                     <span id="grandTotal" class="calc-total-amount">0</span>
                     <span class="calc-total-amount" style="font-size:18px; margin-left:5px;">원</span>
@@ -212,6 +210,8 @@ const recipes = [
 
 let unitPrices = {};
 let activeStatus = JSON.parse(localStorage.getItem('cookActiveStatus')) || {};
+const INGREDIENT_PRICE_KEY = 'cook_ingredient_prices';
+let savedIngredientPrices = JSON.parse(localStorage.getItem(INGREDIENT_PRICE_KEY)) || {};
 
 recipes.forEach(r => { if (activeStatus[r.name] === undefined) activeStatus[r.name] = true; });
 
@@ -275,6 +275,10 @@ function handleInput(el, type, name) {
     if (rawVal === "") rawVal = "0";
     el.value = parseInt(rawVal).toLocaleString();
     const numericVal = parseInt(rawVal);
+    
+    savedIngredientPrices[name] = numericVal;
+    localStorage.setItem(INGREDIENT_PRICE_KEY, JSON.stringify(savedIngredientPrices));
+
     if (type === 'A') calculateA(name, numericVal);
     else calculateB(name, numericVal);
 }
@@ -373,12 +377,14 @@ function updateProfits() {
 }
 
 /* ----------------------------------------------------------- */
-/* [111.html 통합 스크립트] - 충돌 방지 위해 함수명 수정 */
+/* [커스텀 재료 계산기 통합 스크립트] */
 /* ----------------------------------------------------------- */
+// 데이터 수정: 해산물 섹션 추가
 const cropData = [
     { id: "tier3", title: "3티어 작물", items: ["고구마", "무", "콩", "블루베리"] },
     { id: "tier2", title: "2티어 작물", items: ["마늘", "옥수수", "딸기", "파"] },
-    { id: "tier1", title: "1티어 작물", items: ["양상추", "토마토"] }
+    { id: "tier1", title: "1티어 작물", items: ["양상추", "토마토"] },
+    { id: "seafood", title: "해산물", items: ["굴", "미역", "전복", "홍합"] } // 추가된 섹션
 ];
 
 const CROP_STORAGE_KEY = 'sungnyung_crop_prices_v2';
@@ -413,9 +419,10 @@ function initCalculator() {
         currentRow++;
 
         const table = document.createElement('table');
+        // 이름 수정: 재료명, 금액
         table.innerHTML = `
             <thead>
-                <tr><th>작물명</th><th style="width:25%">매입가</th><th style="width:20%">구매수량</th><th style="width:25%">가격</th></tr>
+                <tr><th>재료명</th><th style="width:25%">매입가</th><th style="width:20%">구매수량</th><th style="width:25%">금액</th></tr>
             </thead>
             <tbody>
                 ${tier.items.map((name, idx) => {
@@ -538,16 +545,17 @@ function resetQuantities() {
 /* [메인 초기화 실행] */
 /* ----------------------------------------------------------- */
 function init() {
-    // 탭 1, 2 초기화
     document.getElementById('mainClearBtn').style.display = 'block';
 
     const aBody = document.getElementById('groupABody');
     groupA_Config.forEach(m => {
         const safeId = m.name.replace(/\//g, '').replace(/ /g, '');
+        const displayPrice = (savedIngredientPrices[m.name] !== undefined) ? savedIngredientPrices[m.name] : m.initial;
+        
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
         tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${m.name}</b>${m.label ? `<span class="special-label">${m.label}</span>` : ''}</td>
-            <td><input type="text" class="price-input" value="${m.initial.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
+            <td><input type="text" class="price-input" value="${displayPrice.toLocaleString()}" oninput="handleInput(this, 'A', '${m.name}')"></td>
             <td><span class="val-1 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-64 highlight price-main">0</span><span class="unit-text">원</span></td>`;
@@ -558,16 +566,18 @@ function init() {
             subTr.innerHTML = `<td colspan="2"></td><td colspan="3" style="text-align:left; padding-left:15px;"><span class="gap"><span class="sub-label">상자 1세트:</span><span class="val-set1 sub-val">0</span>원</span><span class="gap"><span class="sub-label">상자 3세트:</span><span class="val-set3 sub-val">0</span>원</span></td>`;
             aBody.appendChild(subTr);
         }
-        calculateA(m.name, m.initial);
+        calculateA(m.name, displayPrice);
     });
 
     const bBody = document.getElementById('groupBBody');
     groupB_Config.forEach(item => {
         const safeId = item.name.replace(/ /g, '');
+        const displayPrice = (savedIngredientPrices[item.name] !== undefined) ? savedIngredientPrices[item.name] : item.initial;
+
         const tr = document.createElement('tr');
         tr.id = `row-${safeId}`;
         tr.innerHTML = `<td style="text-align:left; padding-left:15px;"><b>${item.name}</b></td>
-            <td><input type="text" class="price-input" value="${item.initial.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
+            <td><input type="text" class="price-input" value="${displayPrice.toLocaleString()}" oninput="handleInput(this, 'B', '${item.name}')"></td>
             <td><span class="val-box1 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-32 highlight">0</span><span class="unit-text">원</span></td>
             <td><span class="val-64 highlight price-main">0</span><span class="unit-text">원</span></td>`;
@@ -576,7 +586,7 @@ function init() {
         subTr.id = `sub-b-${safeId}`; subTr.className = 'sub-row';
         subTr.innerHTML = `<td colspan="2"></td><td colspan="3" style="text-align:left; padding-left:15px;"><span class="gap"><span class="sub-label">3세트:</span><span class="val-set3 sub-val">0</span>원</span><span class="gap"><span class="sub-label">9세트:</span><span class="val-line1 sub-val">0</span>원</span><span class="gap"><span class="sub-label">18세트:</span><span class="val-line2 sub-val">0</span>원</span><span class="gap"><span class="sub-label">1셜커:</span><span class="val-shulker sub-val">0</span>원</span></td>`;
         bBody.appendChild(subTr);
-        calculateB(item.name, item.initial);
+        calculateB(item.name, displayPrice);
     });
 
     const allInputs = document.querySelectorAll('.price-input');
@@ -591,10 +601,7 @@ function init() {
         });
     });
 
-    // 탭 3 초기화
     updateProfits();
-
-    // 탭 4 초기화 (111.html 기능)
     initCalculator();
 }
 init();
